@@ -16,24 +16,26 @@
 
     function openMobileMenu() {
         mobileMenu.classList.add('open');
-        hamburger.style.display = 'none';        // oculta hamburguesa
-        closeBtn.style.display = 'block';        // muestra la X
         document.body.style.overflow = 'hidden';
+        if (window.innerWidth <= 768) {
+            hamburger.style.display = 'none';
+            closeBtn.style.display = 'block';
+        }
     }
     function closeMobileMenu() {
         mobileMenu.classList.remove('open');
-        hamburger.style.display = 'flex';        // vuelve hamburguesa
-        closeBtn.style.display = 'none';         // oculta X
         document.body.style.overflow = '';
+        if (window.innerWidth <= 768) {
+            hamburger.style.display = 'flex';
+            closeBtn.style.display = 'none';
+        }
     }
 
     hamburger.addEventListener('click', openMobileMenu);
     closeBtn.addEventListener('click', closeMobileMenu);
     mobileMenuLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-            closeMobileMenu();
-        }
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobileMenu();
     });
 
     // Smooth scroll
@@ -48,7 +50,7 @@
         });
     });
 
-    // Active nav link (sin resaltar contacto)
+    // Active nav link
     const allNavLinks = document.querySelectorAll('.nav-links a[href^="#"], .mobile-menu a[href^="#"]');
     const sectionIds = Array.from(allNavLinks).map(link => link.getAttribute('href').substring(1)).filter(id => id);
     function updateActiveNavLink() {
@@ -88,6 +90,44 @@
         handleReveal();
     }
 
-    // Inicializar X oculta
-    closeBtn.style.display = 'none';
+    // ========== MAPA LEAFLET ==========
+    // Coordenadas aproximadas Ruta 9 Km 145, Córdoba
+    const lat = -31.05;
+    const lng = -64.15;
+    const map = L.map('map').setView([lat, lng], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    L.marker([lat, lng]).addTo(map)
+        .bindPopup('<strong>Parador Roca</strong><br>Ruta Nacional 9, Km 145')
+        .openPopup();
+
+    // Ajustar tamaño del mapa al mostrarse (por si estaba en una pestaña oculta)
+    const ubicacionSection = document.getElementById('ubicacion');
+    if (ubicacionSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    map.invalidateSize();
+                }
+            });
+        });
+        observer.observe(ubicacionSection);
+    }
+
+    // Menú responsive inicial
+    function resetMenuDisplay() {
+        if (window.innerWidth > 768) {
+            closeBtn.style.display = 'none';
+            hamburger.style.display = 'none';
+        } else {
+            if (!mobileMenu.classList.contains('open')) {
+                hamburger.style.display = 'flex';
+                closeBtn.style.display = 'none';
+            }
+        }
+    }
+    window.addEventListener('resize', resetMenuDisplay);
+    resetMenuDisplay();
+    closeMobileMenu(); // Asegurar cerrado al cargar
 })();
