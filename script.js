@@ -2,6 +2,7 @@
     const navbar = document.getElementById('navbar');
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
+    const closeBtn = document.getElementById('closeMenuBtn');
     const mobileMenuLinks = mobileMenu.querySelectorAll('a');
     const currentYearSpan = document.getElementById('currentYear');
 
@@ -15,30 +16,39 @@
 
     function openMobileMenu() {
         mobileMenu.classList.add('open');
-        hamburger.classList.add('active');
-        hamburger.setAttribute('aria-expanded', 'true');
+        hamburger.style.display = 'none';        // oculta hamburguesa
+        closeBtn.style.display = 'block';        // muestra la X
         document.body.style.overflow = 'hidden';
     }
     function closeMobileMenu() {
         mobileMenu.classList.remove('open');
-        hamburger.classList.remove('active');
-        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.style.display = 'flex';        // vuelve hamburguesa
+        closeBtn.style.display = 'none';         // oculta X
         document.body.style.overflow = '';
     }
-    hamburger.addEventListener('click', () => mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu());
-    mobileMenuLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) { closeMobileMenu(); hamburger.focus(); } });
 
+    hamburger.addEventListener('click', openMobileMenu);
+    closeBtn.addEventListener('click', closeMobileMenu);
+    mobileMenuLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+            closeMobileMenu();
+        }
+    });
+
+    // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 e.preventDefault();
-                window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - navbar.offsetHeight - 10, behavior: 'smooth' });
+                const top = target.getBoundingClientRect().top + window.pageYOffset - navbar.offsetHeight - 10;
+                window.scrollTo({ top, behavior: 'smooth' });
             }
         });
     });
 
+    // Active nav link (sin resaltar contacto)
     const allNavLinks = document.querySelectorAll('.nav-links a[href^="#"], .mobile-menu a[href^="#"]');
     const sectionIds = Array.from(allNavLinks).map(link => link.getAttribute('href').substring(1)).filter(id => id);
     function updateActiveNavLink() {
@@ -52,16 +62,17 @@
             const href = link.getAttribute('href').substring(1);
             if (href === current) {
                 link.style.color = 'var(--accent-glow)';
-                if (!link.classList.contains('nav-cta') && !link.classList.contains('mobile-cta')) link.style.background = 'rgba(255,255,255,0.08)';
+                link.style.background = 'rgba(255,255,255,0.08)';
             } else {
                 link.style.color = '';
-                if (!link.classList.contains('nav-cta') && !link.classList.contains('mobile-cta')) link.style.background = '';
+                link.style.background = '';
             }
         });
     }
     window.addEventListener('scroll', updateActiveNavLink, { passive: true });
     updateActiveNavLink();
 
+    // Reveal on scroll
     const revealElements = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
@@ -76,5 +87,7 @@
         window.addEventListener('scroll', handleReveal, { passive: true });
         handleReveal();
     }
-    closeMobileMenu();
+
+    // Inicializar X oculta
+    closeBtn.style.display = 'none';
 })();

@@ -167,34 +167,54 @@ body::after {
     background: rgba(255, 255, 255, 0.06);
     outline: none;
 }
-.nav-links a.nav-cta {
-    background: var(--amber);
-    color: var(--espresso);
-    font-weight: 600;
-    padding: 8px 18px;
-    border-radius: 22px;
-    transition: all var(--transition-bounce);
-}
-.nav-links a.nav-cta:hover {
-    background: var(--accent-glow);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(232, 168, 64, 0.35);
-}
 
 /* Hamburguesa */
 .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1100; flex-direction: column; gap: 6px; justify-content: center; align-items: center; width: 44px; height: 44px; border-radius: 50%; transition: background var(--transition-smooth); }
 .hamburger:hover { background: rgba(255, 255, 255, 0.08); }
 .hamburger span { display: block; width: 24px; height: 2.5px; background: #e0d3c5; border-radius: 3px; transition: all var(--transition-smooth); }
-.hamburger.active span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); background: var(--amber); }
-.hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.hamburger.active span:nth-child(3) { transform: translateY(-8.5px) rotate(-45deg); background: var(--amber); }
 
-.mobile-menu { position: fixed; inset: 0; background: rgba(20, 10, 5, 0.97); z-index: 1050; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0; pointer-events: none; transition: opacity var(--transition-smooth); }
+/* Menú móvil */
+.mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 10, 5, 0.97);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-smooth);
+}
 .mobile-menu.open { opacity: 1; pointer-events: all; }
-.mobile-menu a { color: #e0d3c5; text-decoration: none; font-family: var(--font-heading); font-size: 1.5rem; padding: 14px 24px; border-radius: 28px; transition: all var(--transition-smooth); letter-spacing: 0.03em; }
+.close-menu-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #e0d3c5;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background var(--transition-smooth);
+    z-index: 1060;
+}
+.close-menu-btn:hover { background: rgba(255, 255, 255, 0.08); }
+.mobile-menu a {
+    color: #e0d3c5;
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    padding: 14px 24px;
+    border-radius: 28px;
+    transition: all var(--transition-smooth);
+    letter-spacing: 0.03em;
+}
 .mobile-menu a:hover { color: var(--accent-glow); background: rgba(255, 255, 255, 0.05); }
-.mobile-menu a.mobile-cta { background: var(--amber); color: var(--espresso); font-weight: 700; margin-top: 8px; }
-.mobile-menu a.mobile-cta:hover { background: var(--accent-glow); }
 
 /* ========== HERO ========== */
 .hero { position: relative; min-height: 92vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; overflow: hidden; }
@@ -266,20 +286,14 @@ body::after {
     transition: all var(--transition-bounce);
     border: 2px solid rgba(255,255,255,0.2);
 }
-.btn-whatsapp {
-    background: #25D366;
-}
-.btn-instagram {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-}
+.btn-whatsapp { background: #25D366; }
+.btn-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 .btn-whatsapp:hover, .btn-instagram:hover {
     transform: translateY(-3px);
     filter: brightness(1.1);
     box-shadow: 0 8px 24px rgba(0,0,0,0.25);
 }
-.btn-icon {
-    font-size: 1.2rem;
-}
+.btn-icon { font-size: 1.2rem; }
 
 @keyframes subtlePulse {
     0%, 100% { box-shadow: 0 6px 22px rgba(200, 140, 50, 0.45), 0 0 40px rgba(240, 192, 96, 0.2); }
@@ -323,7 +337,7 @@ body::after {
 .highlight { color: var(--deep-amber); font-weight: 600; }
 .about-image img { width: 100%; height: auto; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-elevated); display: block; }
 
-/* ========== SERVICIOS (textos muy cortos para móvil) ========== */
+/* ========== SERVICIOS ========== */
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .service-card {
     border-radius: var(--border-radius-lg);
@@ -362,45 +376,47 @@ body::after {
     color: var(--espresso);
     margin-bottom: 6px;
 }
-.service-card p {
-    font-size: 0.85rem;
-    color: var(--text-medium);
-    line-height: 1.4;
-}
+.service-card p { font-size: 0.85rem; color: var(--text-medium); line-height: 1.4; }
 
-/* ========== PERSONALIZACIÓN ========== */
+/* ========== PERSONALIZACIÓN (compacta) ========== */
 .personalization-section {
-    border-radius: var(--border-radius-xl);
-    padding: 55px 35px;
-    margin: 20px 0;
+    border-radius: var(--border-radius-lg);
+    padding: 30px 20px;
+    margin: 15px 0;
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-elevated);
     border: 1px solid rgba(200, 150, 80, 0.3);
 }
-.personalization-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
-.personalization-badge { display: inline-block; background: rgba(232, 168, 64, 0.2); border: 1px solid rgba(232, 168, 64, 0.5); color: var(--accent-glow); padding: 7px 18px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 16px; }
-.personalization-inner h2 { font-family: var(--font-heading); font-size: clamp(1.8rem, 3.5vw, 2.4rem); color: var(--white-warm); margin-bottom: 14px; }
-.glow { color: var(--accent-glow); text-shadow: 0 0 24px rgba(240, 192, 96, 0.5); }
-.personalization-inner p { color: #e0cfbe; line-height: 1.6; margin-bottom: 12px; font-size: 0.95rem; }
-.personalization-features { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-.personalization-features li { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; color: #f0e0ce; }
-.personalization-image img { width: 100%; height: auto; border-radius: var(--border-radius-lg); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); border: 1px solid rgba(200, 150, 80, 0.3); display: block; }
-
-.shipping-badge {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #f5e7d3;
-    padding: 10px 22px;
-    border-radius: 24px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    margin-bottom: 20px;
-    backdrop-filter: blur(4px);
+.compact-personalization .personalization-inner {
+    gap: 20px;
 }
-.shipping-badge strong { color: var(--accent-glow); }
+.compact-personalization h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 10px;
+}
+.compact-personalization p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+.compact-personalization .personalization-features {
+    gap: 6px;
+    margin-bottom: 15px;
+}
+.compact-personalization .personalization-features li {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+.compact-personalization .shipping-badge {
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+.compact-personalization .personalization-image {
+    max-width: 300px;
+    margin: 0 auto;
+}
 
 /* ========== GALERÍA ========== */
 .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -416,7 +432,7 @@ body::after {
 .location-detail { display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; color: var(--text-medium); line-height: 1.5; }
 .loc-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
 .hours-badge { display: inline-block; background: #2C6B2C; color: #fff; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
-.map-placeholder { background: linear-gradient(135deg, #C9B896, #D4C5A9, #BFAA8A, #D9CBB0); border-radius: var(--border-radius-lg); min-height: 280px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-medium); text-align: center; box-shadow: var(--shadow-card); flex-direction: column; gap: 10px; border: 2px dashed rgba(160, 120, 80, 0.4); }
+.map-placeholder { background: linear-gradient(135deg, #C9B896, #D4C5A9, #BFAA8A, #D9CBB0); border-radius: var(--border-radius-lg); min-height: 280px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-medium); text-align: center; box-shadow: var(--shadow-card); flex-direction: column; gap: 10px; border: 2px dashed rgba(160, 120, 80, 0.4); text-decoration: none; }
 .map-pin { font-size: 3rem; opacity: 0.7; }
 
 /* ========== CONTACTO ========== */
@@ -468,10 +484,8 @@ body::after {
     .content-section { padding: 25px 15px; margin: 20px 6px; }
     .about-section { padding: 24px 14px; margin: 20px 6px 0; }
     .contact-section { padding: 30px 15px; margin: 20px 6px; }
-    /* Logo más visible en móvil */
     .logo-img { width: 40px; height: 40px; }
     .logo-text { font-size: 1.1rem; }
-    /* Tarjetas más compactas */
     .service-card { padding: 18px 14px; }
     .service-card h3 { font-size: 1rem; }
     .service-card p { font-size: 0.8rem; }
