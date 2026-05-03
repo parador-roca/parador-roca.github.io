@@ -26,6 +26,12 @@
     hamburger.addEventListener('click', openMobileMenu);
     closeBtn.addEventListener('click', closeMobileMenu);
     mobileMenuLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
+
+    // Cerrar menú al tocar fuera del contenido (para mejor experiencia móvil)
+    mobileMenu.addEventListener('click', function(e) {
+        if (e.target === mobileMenu) closeMobileMenu();
+    });
+
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobileMenu(); });
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -61,10 +67,10 @@
     if ('IntersectionObserver' in window) {
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); } });
-        }, { rootMargin: '0px 0px -50px 0px', threshold: 0.08 });
+        }, { rootMargin: '0px 0px -40px 0px', threshold: 0.1 });
         revealElements.forEach(el => revealObserver.observe(el));
     } else {
-        const handleReveal = () => { const wh = window.innerHeight; revealElements.forEach(el => { if (el.getBoundingClientRect().top < wh - 80) el.classList.add('visible'); }); };
+        const handleReveal = () => { const wh = window.innerHeight; revealElements.forEach(el => { if (el.getBoundingClientRect().top < wh - 70) el.classList.add('visible'); }); };
         window.addEventListener('scroll', handleReveal, { passive: true }); handleReveal();
     }
 
