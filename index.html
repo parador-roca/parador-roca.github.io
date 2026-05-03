@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parador Roca — Abierto las 24 horas | Comida casera, Artesanías y Personalización UV</title>
-    <meta name="description" content="Parador Roca es una parada rural abierta 24/7 en la Ruta 9, Córdoba. Comida casera, artesanías en madera, mates personalizados con láser UV y envíos a todo el país.">
-    <meta name="keywords" content="parador, roca, ruta 9, comida 24 horas, artesanías, mates personalizados, láser UV, grabado láser, regalos únicos, envíos Argentina, Córdoba, parada rural">
+    <meta name="description" content="Parador Roca es una parada rural abierta 24/7 en Gobernador Roca, Misiones. Comida casera, artesanías en madera, mates personalizados con láser UV y envíos a todo el país.">
+    <meta name="keywords" content="parador, roca, gobernador roca, misiones, comida 24 horas, artesanías, mates personalizados, láser UV, grabado láser, regalos únicos, envíos Argentina">
     <meta name="author" content="Parador Roca">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://parador-roca.github.io/">
@@ -37,8 +37,9 @@
       "image": "https://parador-roca.github.io/images/logo.png",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Ruta Nacional 9, Km 145",
-        "addressLocality": "Provincia de Córdoba",
+        "streetAddress": "Gdor. Roca",
+        "addressLocality": "Gobernador Roca",
+        "addressRegion": "Misiones",
         "addressCountry": "AR"
       },
       "openingHours": "Mo-Su 00:00-23:59",
@@ -46,27 +47,24 @@
       "url": "https://parador-roca.github.io/",
       "sameAs": [
         "https://www.instagram.com/paradoroca_misiones"
-      ]
+      ],
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -27.170044,
+        "longitude": -55.446199
+      }
     }
     </script>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="global-bg"></div>
     <div class="page-wrapper">
         <nav class="nav" id="navbar">
-            <div class="nav-inner">
+            <div class="nav-inner container">
                 <a href="#hero" class="nav-logo">
                     <img src="images/logo.png" alt="Logo Parador Roca" class="logo-img" width="48" height="48">
                     <span class="logo-text">Parador Roca</span>
@@ -97,184 +95,203 @@
             <a href="#contacto">Contacto</a>
         </div>
 
-        <section class="hero" id="hero">
-            <div class="hero-bg-image"></div>
-            <div class="hero-content">
-                <div class="hero-badge">🕐 Abierto las 24 horas</div>
-                <h1>Parador <span class="accent">Roca</span></h1>
-                <p class="hero-subtitle-main">Abierto las 24 horas</p>
-                <p class="hero-subtitle">Comida, artesanía y experiencias en un solo lugar</p>
-                <div class="hero-buttons">
-                    <a href="#contacto" class="btn btn-primary">📱 Pedir por WhatsApp</a>
-                    <a href="#servicios" class="btn btn-outline">Ver productos</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="about-section reveal" id="sobre-nosotros">
-            <div class="about-grid">
-                <div class="about-text">
-                    <span class="section-label">Nuestra esencia</span>
-                    <h2 class="section-title">Un lugar para detenerse, comer y descubrir</h2>
-                    <p>
-                        <span class="highlight">Parador Roca</span> nace en la ruta, como nacen los buenos encuentros: sin aviso y con el corazón abierto.
-                        Somos una parada obligada para quienes buscan <span class="highlight">comida casera a toda hora</span>, productos hechos a mano y esa calidez que solo un lugar con alma puede ofrecer.
-                    </p>
-                    <p>
-                        Acá no hay apuro. Hay <span class="highlight">madera, fuego, mate y gente</span> que pone el corazón en cada detalle.
-                        Nuestro parador está pensado para que te sientas como en casa — sin importar la hora que marque el reloj.
-                    </p>
-                    <p><strong>🕐 Abierto las 24 horas, todos los días.</strong></p>
-                </div>
-                <div class="about-image">
-                    <img src="images/parador-interior.webp" alt="Interior cálido de Parador Roca" width="600" height="400" loading="lazy">
-                </div>
-            </div>
-        </section>
-
-        <section class="section content-section reveal" id="servicios">
-            <div class="text-center">
-                <span class="section-label">Qué ofrecemos</span>
-                <h2 class="section-title">Servicios del Parador</h2>
-                <p class="section-subtitle mx-auto">Tres pilares que hacen de Parador Roca una experiencia única en la ruta argentina.</p>
-            </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <span class="service-icon">🍲</span>
-                    <h3>Gastronomía</h3>
-                    <p>Comida casera las 24 horas. Platos calientes, sandwiches, bebidas.</p>
-                </div>
-                <div class="service-card">
-                    <span class="service-icon">🪵</span>
-                    <h3>Artesanías & Mates</h3>
-                    <p>Mates tallados, tablas, cuchillos artesanales. Hechos a mano.</p>
-                </div>
-                <div class="service-card featured">
-                    <span class="service-icon">✨</span>
-                    <h3>Personalización UV</h3>
-                    <p>Grabado láser de alta precisión. Mates, madera, acrílico y más.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section personalization-section reveal" id="personalizacion">
-            <div class="personalization-wrapper">
-                <div class="personalization-card">
-                    <div class="personalization-text">
-                        <div class="personalization-badge">⚡ Tecnología exclusiva en la zona</div>
-                        <h2>Personalización con <span class="glow">Láser UV</span></h2>
-                        <p><strong>No todos los paradores tienen esta tecnología.</strong> Contamos con una máquina de grabado láser UV de alta precisión para crear <strong>productos personalizados únicos</strong> en minutos.</p>
-                        <p>¿Buscás un regalo especial? ¿Un mate con un nombre? Acá lo hacemos realidad. <strong>Rápido, preciso y con terminación profesional.</strong></p>
-                        <ul class="personalization-features">
-                            <li>🧉 Mates</li>
-                            <li>🪵 Madera</li>
-                            <li>💎 Acrílico</li>
-                            <li>✍️ Nombres</li>
-                            <li>🎁 Regalos</li>
-                            <li>🔤 Diseños</li>
-                        </ul>
-                        <p class="shipping-badge">📦 <strong>Envíos a todo el país</strong></p>
-                        <a href="#contacto" class="btn btn-primary btn-glow">💬 Consultar personalización</a>
+        <main>
+            <section class="hero" id="hero">
+                <div class="hero-bg-image"></div>
+                <div class="hero-content container">
+                    <div class="hero-badge">🕐 Abierto las 24 horas</div>
+                    <h1>Parador <span class="accent">Roca</span></h1>
+                    <p class="hero-subtitle-main">Abierto las 24 horas</p>
+                    <p class="hero-subtitle">Comida, artesanía y experiencias en un solo lugar</p>
+                    <div class="hero-buttons">
+                        <a href="#contacto" class="btn btn-primary">📱 Pedir por WhatsApp</a>
+                        <a href="#servicios" class="btn btn-outline">Ver productos</a>
                     </div>
-                    <div class="personalization-image">
-                        <div class="image-floating">
-                            <img src="images/laser-uv.webp" alt="Máquina de grabado láser UV en Parador Roca" width="500" height="500" loading="lazy">
+                </div>
+            </section>
+
+            <section class="about-section container reveal" id="sobre-nosotros">
+                <div class="about-grid">
+                    <div class="about-text">
+                        <span class="section-label">Nuestra esencia</span>
+                        <h2 class="section-title">Un lugar para detenerse, comer y descubrir</h2>
+                        <p>
+                            <span class="highlight">Parador Roca</span> nace en la ruta, como nacen los buenos encuentros: sin aviso y con el corazón abierto.
+                            Somos una parada obligada para quienes buscan <span class="highlight">comida casera a toda hora</span>, productos hechos a mano y esa calidez que solo un lugar con alma puede ofrecer.
+                        </p>
+                        <p>
+                            Acá no hay apuro. Hay <span class="highlight">madera, fuego, mate y gente</span> que pone el corazón en cada detalle.
+                            Nuestro parador está pensado para que te sientas como en casa — sin importar la hora que marque el reloj.
+                        </p>
+                        <p><strong>🕐 Abierto las 24 horas, todos los días.</strong></p>
+                    </div>
+                    <div class="about-image">
+                        <img src="images/parador-interior.webp" alt="Interior cálido de Parador Roca" width="600" height="400" loading="lazy">
+                    </div>
+                </div>
+            </section>
+
+            <section class="section container reveal" id="servicios">
+                <div class="text-center">
+                    <span class="section-label">Qué ofrecemos</span>
+                    <h2 class="section-title">Servicios del Parador</h2>
+                    <p class="section-subtitle mx-auto">Tres pilares que hacen de Parador Roca una experiencia única en la ruta argentina.</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <span class="service-icon">🍲</span>
+                        <h3>Gastronomía</h3>
+                        <p>Comida casera las 24 horas. Platos calientes, sandwiches, bebidas.</p>
+                    </div>
+                    <div class="service-card">
+                        <span class="service-icon">🪵</span>
+                        <h3>Artesanías & Mates</h3>
+                        <p>Mates tallados, tablas, cuchillos artesanales. Hechos a mano.</p>
+                    </div>
+                    <div class="service-card featured">
+                        <span class="service-icon">✨</span>
+                        <h3>Personalización UV</h3>
+                        <p>Grabado láser de alta precisión. Mates, madera, acrílico y más.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section container reveal" id="personalizacion">
+                <div class="personalization-block">
+                    <div class="personalization-content">
+                        <div class="personalization-text">
+                            <div class="personalization-badge">⚡ Tecnología exclusiva en la zona</div>
+                            <h2>Personalización con <span class="glow">Láser UV</span></h2>
+                            <p><strong>No todos los paradores tienen esta tecnología.</strong> Contamos con una máquina de grabado láser UV de alta precisión para crear <strong>productos personalizados únicos</strong> en minutos.</p>
+                            <p>¿Buscás un regalo especial? ¿Un mate con un nombre? Acá lo hacemos realidad. <strong>Rápido, preciso y con terminación profesional.</strong></p>
+                            <ul class="personalization-tags">
+                                <li>🧉 Mates</li>
+                                <li>🪵 Madera</li>
+                                <li>💎 Acrílico</li>
+                                <li>✍️ Nombres</li>
+                                <li>🎁 Regalos</li>
+                                <li>🔤 Diseños</li>
+                            </ul>
+                            <p class="shipping-badge">📦 <strong>Envíos a todo el país</strong></p>
+                            <a href="#contacto" class="btn btn-primary btn-glow">💬 Consultar personalización</a>
+                        </div>
+                        <div class="personalization-visual">
+                            <div class="image-frame">
+                                <img src="images/laser-uv.webp" alt="Máquina de grabado láser UV en Parador Roca" width="500" height="500" loading="lazy">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="section content-section reveal" id="galeria">
-            <div class="text-center">
-                <span class="section-label">Galería</span>
-                <h2 class="section-title">El alma de Parador Roca</h2>
-                <p class="section-subtitle mx-auto">Un vistazo a nuestros productos, nuestro espacio y la atmósfera que nos hace únicos.</p>
-            </div>
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="images/galeria-mueble.webp" alt="Muebles de madera artesanal" loading="lazy">
-                    <span class="gallery-label">Muebles de madera artesanal</span>
+            <section class="section container reveal" id="galeria">
+                <div class="text-center">
+                    <span class="section-label">Galería</span>
+                    <h2 class="section-title">El alma de Parador Roca</h2>
+                    <p class="section-subtitle mx-auto">Un vistazo a nuestros productos, nuestro espacio y la atmósfera que nos hace únicos.</p>
                 </div>
-                <div class="gallery-item">
-                    <img src="images/galeria-mates.webp" alt="Mates y productos handmade" loading="lazy">
-                    <span class="gallery-label">Mates y productos handmade</span>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="images/galeria-mueble.webp" alt="Muebles de madera artesanal" loading="lazy">
+                        <span class="gallery-label">Muebles de madera artesanal</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/galeria-mates.webp" alt="Mates y productos handmade" loading="lazy">
+                        <span class="gallery-label">Mates y productos handmade</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/galeria-ambiente.webp" alt="Ambiente cálido y acogedor" loading="lazy">
+                        <span class="gallery-label">Ambiente cálido y acogedor</span>
+                    </div>
                 </div>
-                <div class="gallery-item">
-                    <img src="images/galeria-ambiente.webp" alt="Ambiente cálido y acogedor" loading="lazy">
-                    <span class="gallery-label">Ambiente cálido y acogedor</span>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="section content-section reveal" id="ubicacion">
-            <div class="text-center">
-                <span class="section-label">Visitá el parador</span>
-                <h2 class="section-title">Ubicación & Horarios</h2>
-                <p class="section-subtitle mx-auto">Estamos en la ruta, listos para recibirte en cualquier momento del día.</p>
-            </div>
-            <div class="location-grid">
-                <div class="location-info">
-                    <h3>📍 Dónde encontrarnos</h3>
-                    <div class="location-detail">
-                        <span class="loc-icon">📍</span>
-                        <span><strong>Dirección:</strong><br>Ruta Nacional 9, Km 145<br>Provincia de Córdoba, Argentina</span>
+            <section class="section container reveal" id="ubicacion">
+                <div class="text-center">
+                    <span class="section-label">Visitá el parador</span>
+                    <h2 class="section-title">Ubicación & Horarios</h2>
+                    <p class="section-subtitle mx-auto">Estamos en la ruta, listos para recibirte en cualquier momento del día.</p>
+                </div>
+                <div class="location-grid">
+                    <div class="location-info">
+                        <h3>📍 Dónde encontrarnos</h3>
+                        <div class="location-detail">
+                            <span class="loc-icon">📍</span>
+                            <span><strong>Dirección:</strong><br>Gdor. Roca<br>Provincia de Misiones, Argentina</span>
+                        </div>
+                        <div class="location-detail">
+                            <span class="loc-icon">🕐</span>
+                            <span><strong>Horario:</strong><br>Abierto las 24 horas, los 7 días de la semana</span>
+                        </div>
+                        <div class="hours-badge">🟢 ABIERTO AHORA — 24 HORAS</div>
+                        <p class="location-note">No importa la hora. <strong>Siempre hay algo rico, alguien despierto y un lugar para vos.</strong></p>
                     </div>
-                    <div class="location-detail">
-                        <span class="loc-icon">🕐</span>
-                        <span><strong>Horario:</strong><br>Abierto las 24 horas, los 7 días de la semana</span>
+                    <div class="map-container">
+                        <!-- Mapa de Google Maps -->
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3785.2758984137695!2d-55.44619964707883!3d-27.17004445836643!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94f80a5db3657bdf%3A0x9ee1c6bd8b97478!2sRHJ3%2B3F%2C%20Gdor.%20Roca%2C%20Misiones!5e1!3m2!1ses-419!2sar!4v1777842533266!5m2!1ses-419!2sar"
+                            width="100%"
+                            height="250"
+                            style="border:0; border-radius: var(--radius);"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Mapa de ubicación de Parador Roca"
+                        ></iframe>
+                        <!-- Vista de Street View -->
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!4v1777842611186!6m8!1m7!1sLjWzxBRGXIBXc_y8b53NvA!2m2!1d-27.17004445836643!2d-55.44619964707883!3f316.89290896086817!4f3.6245990236059384!5f0.7820865974627469"
+                            width="100%"
+                            height="250"
+                            style="border:0; border-radius: var(--radius);"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Vista de calle de Parador Roca"
+                        ></iframe>
+                        <a href="https://maps.app.goo.gl/5mVU27Ke3FAgcWGU7" target="_blank" rel="noopener noreferrer" class="btn btn-primary map-link">📍 Abrir en Google Maps</a>
                     </div>
-                    <div style="text-align:center;margin-top:8px;">
-                        <span class="hours-badge">🟢 ABIERTO AHORA — 24 HORAS</span>
-                    </div>
-                    <p style="text-align:center;color:var(--text-medium);font-size:1rem;margin-top:12px;">
-                        No importa la hora. <strong>Siempre hay algo rico, alguien despierto y un lugar para vos.</strong>
+                </div>
+            </section>
+
+            <section class="contact-section container reveal" id="contacto">
+                <div class="contact-card">
+                    <span class="section-label">Contactanos</span>
+                    <h2 class="section-title">Hablá con nosotros</h2>
+                    <p class="contact-description">
+                        Pedí comida, consultá por productos personalizados o contanos qué necesitás.<br>
+                        <strong>Respondemos rápido por WhatsApp.</strong>
                     </p>
+                    <div class="contact-buttons">
+                        <a href="https://wa.me/5493764110814?text=Hola%20Parador%20Roca%21%20Quisiera%20hacer%20una%20consulta..." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+                            <span>💬</span> WhatsApp
+                        </a>
+                        <a href="https://www.instagram.com/paradoroca_misiones?igsh=ZXE3cGRmNDJ0ZXRo" target="_blank" rel="noopener noreferrer" class="btn btn-instagram">
+                            <span>📷</span> Instagram
+                        </a>
+                    </div>
+                    <p class="contact-footer-text">¿Tenés una idea para personalizar? <strong>Mandanos un mensaje y la hacemos realidad.</strong></p>
                 </div>
-                <div class="map-container">
-                    <div id="map"></div>
-                    <a href="https://maps.app.goo.gl/5mVU27Ke3FAgcWGU7" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top:14px;">📍 Abrir en Google Maps</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="contact-section reveal" id="contacto">
-            <div class="contact-card">
-                <span class="section-label">Contactanos</span>
-                <h2 class="section-title">Hablá con nosotros</h2>
-                <p class="contact-description">
-                    Pedí comida, consultá por productos personalizados o contanos qué necesitás.<br>
-                    <strong>Respondemos rápido por WhatsApp.</strong>
-                </p>
-                <div class="contact-buttons">
-                    <a href="https://wa.me/5493764110814?text=Hola%20Parador%20Roca%21%20Quisiera%20hacer%20una%20consulta..." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
-                        <span class="btn-icon">💬</span> WhatsApp
-                    </a>
-                    <a href="https://www.instagram.com/paradoroca_misiones?igsh=ZXE3cGRmNDJ0ZXRo" target="_blank" rel="noopener noreferrer" class="btn btn-instagram">
-                        <span class="btn-icon">📷</span> Instagram
-                    </a>
-                </div>
-                <p class="contact-footer-text">
-                    ¿Tenés una idea para personalizar? <strong>Mandanos un mensaje y la hacemos realidad.</strong>
-                </p>
-            </div>
-        </section>
+            </section>
+        </main>
 
         <footer class="footer">
-            <div class="footer-brand">Parador Roca</div>
-            <p>Abierto las 24 horas — Comida, artesanía y personalización en la ruta</p>
-            <p style="color: var(--accent); margin-bottom:12px;">📦 <strong>Hacemos envíos a todo el país</strong></p>
-            <div class="footer-links">
-                <a href="#hero">Inicio</a>
-                <a href="#sobre-nosotros">Sobre nosotros</a>
-                <a href="#servicios">Servicios</a>
-                <a href="#personalizacion">Personalización UV</a>
-                <a href="#galeria">Galería</a>
-                <a href="#ubicacion">Ubicación</a>
-                <a href="#contacto">Contacto</a>
-            </div>
-            <div class="footer-bottom">
-                &copy; <span id="currentYear"></span> Parador Roca — Hecho con 🧉 y madera en Argentina.
+            <div class="container footer-content">
+                <div class="footer-brand">Parador Roca</div>
+                <p>Abierto las 24 horas — Comida, artesanía y personalización en la ruta</p>
+                <p class="footer-shipping">📦 <strong>Hacemos envíos a todo el país</strong></p>
+                <div class="footer-links">
+                    <a href="#hero">Inicio</a>
+                    <a href="#sobre-nosotros">Sobre nosotros</a>
+                    <a href="#servicios">Servicios</a>
+                    <a href="#personalizacion">Personalización UV</a>
+                    <a href="#galeria">Galería</a>
+                    <a href="#ubicacion">Ubicación</a>
+                    <a href="#contacto">Contacto</a>
+                </div>
+                <div class="footer-bottom">
+                    &copy; <span id="currentYear"></span> Parador Roca — Hecho con 🧉 y madera en Argentina.
+                </div>
             </div>
         </footer>
     </div>
