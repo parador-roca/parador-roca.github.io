@@ -1,84 +1,153 @@
 (function() {
+    'use strict';
+
     const navbar = document.getElementById('navbar');
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
     const closeBtn = document.getElementById('closeMenuBtn');
-    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+    const mobileNavLinks = mobileMenu.querySelectorAll('.mobile-nav-links a');
     const currentYearSpan = document.getElementById('currentYear');
 
     if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
 
-    function updateNavbarScroll() { navbar.classList.toggle('scrolled', window.scrollY > 60); }
+    // Navbar scroll effect
+    function updateNavbarScroll() {
+        if (window.scrollY > 60) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
     window.addEventListener('scroll', updateNavbarScroll, { passive: true });
     updateNavbarScroll();
 
+    // Mobile menu toggle
     function openMobileMenu() {
         mobileMenu.classList.add('open');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+        hamburger.setAttribute('aria-expanded', 'true');
         document.body.style.overflow = 'hidden';
-        if (window.innerWidth <= 768) { hamburger.style.display = 'none'; closeBtn.style.display = 'flex'; }
+        closeBtn.focus();
     }
+
     function closeMobileMenu() {
         mobileMenu.classList.remove('open');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        hamburger.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
-        if (window.innerWidth <= 768) { hamburger.style.display = 'flex'; closeBtn.style.display = 'none'; }
+        hamburger.focus();
     }
 
     hamburger.addEventListener('click', openMobileMenu);
     closeBtn.addEventListener('click', closeMobileMenu);
-    mobileMenuLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
 
-    // Cerrar menú al tocar fuera del contenido (para mejor experiencia móvil)
-    mobileMenu.addEventListener('click', function(e) {
-        if (e.target === mobileMenu) closeMobileMenu();
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeMobileMenu();
+        });
     });
 
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobileMenu(); });
+    mobileMenu.addEventListener('click', function(e) {
+        if (e.target === mobileMenu || e.target.classList.contains('mobile-menu-backdrop')) {
+            closeMobileMenu();
+        }
+    });
 
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+            closeMobileMenu();
+        }
+    });
+
+    // Smooth scroll for anchor links (improved for mobile)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
                 e.preventDefault();
-                const top = target.getBoundingClientRect().top + window.pageYOffset - navbar.offsetHeight - 10;
-                window.scrollTo({ top, behavior: 'smooth' });
+                const navbarHeight = navbar.offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 16;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                if (mobileMenu.classList.contains('open')) {
+                    closeMobileMenu();
+                }
             }
         });
     });
 
-    const allNavLinks = document.querySelectorAll('.nav-links a[href^="#"], .mobile-menu a[href^="#"]');
-    const sectionIds = Array.from(allNavLinks).map(link => link.getAttribute('href').substring(1)).filter(id => id);
+    // Active nav link highlight based on scroll position
+    const allNavLinks = document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav-links a[href^="#"]');
+    const sectionIds = Array.from(allNavLinks).map(link => link.getAttribute('href').substring(1)).filter(id => id && document.getElementById(id));
+
     function updateActiveNavLink() {
-        const scrollY = window.scrollY + navbar.offsetHeight + 80;
-        let current = null;
+        const scrollY = window.scrollY + navbar.offsetHeight + 100;
+        let currentSection = null;
+
         sectionIds.forEach(id => {
             const section = document.getElementById(id);
-            if (section && scrollY >= section.offsetTop && scrollY < section.offsetTop + section.offsetHeight) current = id;
+            if (section) {
+                const sectionTop = section.offsetTop;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                    currentSection = id;
+                }
+            }
         });
+
         allNavLinks.forEach(link => {
             const href = link.getAttribute('href').substring(1);
-            if (href === current) { link.style.color = 'var(--primary)'; link.style.background = 'rgba(183,90,58,0.08)'; }
-            else { link.style.color = ''; link.style.background = ''; }
+            if (href === currentSection) {
+                link.style.color = 'var(--primary)';
+                link.style.background = 'rgba(183,90,58,0.08)';
+            } else {
+                link.style.color = '';
+                link.style.background = '';
+            }
         });
     }
     window.addEventListener('scroll', updateActiveNavLink, { passive: true });
     updateActiveNavLink();
 
+    // Reveal animations on scroll
     const revealElements = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window) {
         const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); } });
-        }, { rootMargin: '0px 0px -40px 0px', threshold: 0.1 });
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -40px 0px', threshold: 0.08 });
         revealElements.forEach(el => revealObserver.observe(el));
     } else {
-        const handleReveal = () => { const wh = window.innerHeight; revealElements.forEach(el => { if (el.getBoundingClientRect().top < wh - 70) el.classList.add('visible'); }); };
-        window.addEventListener('scroll', handleReveal, { passive: true }); handleReveal();
+        function handleRevealFallback() {
+            const windowHeight = window.innerHeight;
+            revealElements.forEach(el => {
+                if (el.getBoundingClientRect().top < windowHeight - 70) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+        window.addEventListener('scroll', handleRevealFallback, { passive: true });
+        handleRevealFallback();
     }
 
-    function resetMenuDisplay() {
-        if (window.innerWidth > 768) { closeBtn.style.display = 'none'; hamburger.style.display = 'none'; if (mobileMenu.classList.contains('open')) closeMobileMenu(); }
-        else { if (!mobileMenu.classList.contains('open')) { hamburger.style.display = 'flex'; closeBtn.style.display = 'none'; } }
+    // Reset menu state on resize to avoid stuck overlay
+    function handleResize() {
+        if (window.innerWidth > 768) {
+            if (mobileMenu.classList.contains('open')) {
+                closeMobileMenu();
+            }
+        }
     }
-    window.addEventListener('resize', resetMenuDisplay);
-    resetMenuDisplay();
+    window.addEventListener('resize', handleResize);
+
+    // Ensure menu is hidden on initial load (especially for mobile)
     closeMobileMenu();
 })();
