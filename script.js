@@ -59,7 +59,7 @@
         }
     });
 
-    // Smooth scroll for anchor links (improved for mobile)
+    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
