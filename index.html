@@ -2,6 +2,22 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script>
+        // Restaurar scroll guardado (volver de menu/menu.html)
+        // Corre antes de que se pinte la página para evitar flash
+        (function() {
+            try {
+                var y = sessionStorage.getItem('paradorIndexScrollY');
+                if (y !== null) {
+                    var n = parseInt(y, 10);
+                    if (!isNaN(n) && n > 0) {
+                        window.__paradorRestoreY = n;
+                        document.documentElement.style.scrollBehavior = 'auto';
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#b75a3a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -169,8 +185,6 @@
 <body>
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
-    <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
-
     <div class="page-wrapper">
         <header class="navbar" id="navbar">
             <div class="navbar-inner container">
@@ -317,25 +331,25 @@
                     <p class="section-subtitle mx-auto">Cada servicio está pensado para que vivas una experiencia única en la ruta argentina.</p>
                 </div>
                 <div class="services-grid">
-                    <article class="service-card">
+                    <a href="menu/menu.html" class="service-card" aria-label="Ver el menú de Gastronomía">
                         <div class="service-card-bg" style="background-image: url('img/fondo/fondo.webp');" aria-hidden="true"></div>
                         <div class="service-card-content">
                             <span class="service-icon" aria-hidden="true">🍲</span>
                             <h3>Gastronomía 24h</h3>
                             <p>Comida casera recién hecha a toda hora. Platos calientes, sandwiches, bebidas y el mejor aroma a hogar.</p>
-                            <span class="service-card-tag">Siempre abierto</span>
+                            <span class="service-card-tag">Ver el menú →</span>
                         </div>
-                    </article>
-                    <article class="service-card">
+                    </a>
+                    <a href="#galeria" class="service-card" aria-label="Ver galería de Artesanías y Mates">
                         <div class="service-card-bg" style="background-image: url('img/fondo/fondo.webp');" aria-hidden="true"></div>
                         <div class="service-card-content">
                             <span class="service-icon" aria-hidden="true">🪵</span>
                             <h3>Artesanías & Mates</h3>
                             <p>Mates tallados, tablas de madera, cuchillos artesanales. Productos únicos hechos a mano con dedicación.</p>
-                            <span class="service-card-tag">Hecho a mano</span>
+                            <span class="service-card-tag">Ver galería →</span>
                         </div>
-                    </article>
-                    <article class="service-card featured">
+                    </a>
+                    <a href="#personalizacion" class="service-card featured" aria-label="Ver regalos personalizados">
                         <div class="service-card-bg" style="background-image: url('img/fondo/fondo.webp');" aria-hidden="true"></div>
                         <div class="service-card-content">
                             <span class="service-icon" aria-hidden="true">🎁</span>
@@ -343,7 +357,7 @@
                             <p>Poné tu nombre, una frase o un diseño en mates, maderas y regalos. Listos en minutos.</p>
                             <span class="service-card-tag featured-tag">Hecho para vos</span>
                         </div>
-                    </article>
+                    </a>
                 </div>
             </section>
 
@@ -421,12 +435,6 @@
                 </div>
             </section>
 
-            <!--
-                GALERÍA
-                Las imágenes están en galeria/<categoria>/<numero>.webp
-                Si querés cambiar la portada de una categoría, cambiá el src del <img>.
-                Si querés cambiar la lista del lightbox, cambiá data-images.
-            -->
             <section class="section container reveal" id="galeria" aria-labelledby="gallery-heading">
                 <div class="text-center">
                     <span class="section-label">Galería</span>

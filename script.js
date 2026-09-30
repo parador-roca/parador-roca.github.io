@@ -2,17 +2,68 @@
     'use strict';
 
     /* =========================================================
+       Restaurar scroll guardado (volver desde menu/menu.html)
+       ========================================================= */
+    (function restoreScroll() {
+        if (typeof window.__paradorRestoreY !== 'number') return;
+        const y = window.__paradorRestoreY;
+        const html = document.documentElement;
+
+        // Desactivar smooth scroll para que la restauración sea instantánea
+        html.style.scrollBehavior = 'auto';
+
+        // Intento 1: ya (script.js corre después del parse con defer)
+        window.scrollTo(0, y);
+
+        // Intento 2: próximo frame
+        requestAnimationFrame(() => window.scrollTo(0, y));
+
+        // Intento 3: cuando todo cargó (por fuentes/imágenes que cambian el layout)
+        window.addEventListener('load', () => {
+            window.scrollTo(0, y);
+            html.style.removeProperty('scroll-behavior');
+        }, { once: true });
+
+        delete window.__paradorRestoreY;
+    })();
+
+    /* =========================================================
+       Guardar scroll periódicamente para volver al mismo lugar
+       ========================================================= */
+    (function saveScroll() {
+        const KEY = 'paradorIndexScrollY';
+        let timer = null;
+
+        function save() {
+            try {
+                sessionStorage.setItem(KEY, String(window.scrollY));
+            } catch (e) { /* ignore */ }
+            timer = null;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (timer) return;
+            timer = setTimeout(save, 250);
+        }, { passive: true });
+
+        // Guardar cuando la página se oculta o se va
+        window.addEventListener('pagehide', save);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') save();
+        });
+    })();
+
+    /* =========================================================
        Referencias del DOM
        ========================================================= */
-    const navbar             = document.getElementById('navbar');
-    const hamburger          = document.getElementById('hamburger');
-    const mobileMenu         = document.getElementById('mobileMenu');
-    const closeBtn           = document.getElementById('closeMenuBtn');
-    const mobileNavLinks     = mobileMenu ? mobileMenu.querySelectorAll('.mobile-nav-links a') : [];
-    const currentYearSpan    = document.getElementById('currentYear');
-    const readingProgress    = document.getElementById('readingProgress');
-    const backToTop          = document.getElementById('backToTop');
-    const faqGrid            = document.getElementById('faqGrid');
+    const navbar          = document.getElementById('navbar');
+    const hamburger       = document.getElementById('hamburger');
+    const mobileMenu      = document.getElementById('mobileMenu');
+    const closeBtn        = document.getElementById('closeMenuBtn');
+    const mobileNavLinks  = mobileMenu ? mobileMenu.querySelectorAll('.mobile-nav-links a') : [];
+    const currentYearSpan = document.getElementById('currentYear');
+    const backToTop       = document.getElementById('backToTop');
+    const faqGrid         = document.getElementById('faqGrid');
 
     /* =========================================================
        Utilidades
@@ -64,13 +115,6 @@
         });
     }
 
-    function updateReadingProgress() {
-        if (!readingProgress) return;
-        const docH = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = docH > 0 ? Math.min(100, Math.max(0, (window.scrollY / docH) * 100)) : 0;
-        readingProgress.style.width = pct + '%';
-    }
-
     function updateBackToTop() {
         if (!backToTop) return;
         backToTop.classList.toggle('visible', window.scrollY > 600);
@@ -83,7 +127,6 @@
         window.requestAnimationFrame(() => {
             updateNavbarScroll();
             updateActiveNavLink();
-            updateReadingProgress();
             updateBackToTop();
             ticking = false;
         });
@@ -92,7 +135,6 @@
     window.addEventListener('resize', onScroll, { passive: true });
     updateNavbarScroll();
     updateActiveNavLink();
-    updateReadingProgress();
     updateBackToTop();
 
     /* =========================================================
@@ -105,7 +147,7 @@
     }
 
     /* =========================================================
-       3. Mobile menu (focus trap)
+       3. Mobile menu (focus trap + inert)
        ========================================================= */
     let lastFocusedBeforeMenu = null;
 
@@ -176,7 +218,7 @@
     }
 
     /* =========================================================
-       4. Smooth scroll
+       4. Smooth scroll (solo para anclas #, no para menu/menu.html)
        ========================================================= */
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -210,7 +252,7 @@
     }
 
     /* =========================================================
-       6. FAQ
+       6. FAQ (acordeón, solo uno abierto)
        ========================================================= */
     if (faqGrid) {
         const faqItems = Array.from(faqGrid.querySelectorAll('.faq-item'));
@@ -238,7 +280,7 @@
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            if (window.innerWidth > 1024 && mobileMenu && mobileMenu.classList.contains('open')) {
+            if (window.innerWidth > 1080 && mobileMenu && mobileMenu.classList.contains('open')) {
                 closeMobileMenu(false);
             }
         }, 150);
@@ -248,11 +290,5 @@
        8. Estado inicial
        ========================================================= */
     setInert(mobileMenu, true);
-
-    // Exponer helpers que galeria.js necesita (inert + reduced motion)
-    window.ParadorRoca = {
-        setInert: setInert,
-        prefersReducedMotion: prefersReducedMotion
-    };
 
 })();
