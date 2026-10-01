@@ -1176,18 +1176,24 @@ button:focus-visible,
 .faq-item.open .faq-icon { transform: rotate(180deg); }
 .faq-item.open .faq-icon::after { opacity: 0; }
 
+/* ---- Animación con max-height (sin bugs en Safari/iOS) ---- */
 .faq-answer {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.3s ease;
+    will-change: max-height, opacity;
 }
-.faq-item.open .faq-answer { grid-template-rows: 1fr; }
-.faq-answer-inner { overflow: hidden; }
+.faq-item.open .faq-answer {
+    opacity: 1;
+}
 .faq-answer-inner p {
     padding: 0 clamp(18px, 2.5vw, 24px) clamp(18px, 2.5vw, 22px);
     color: var(--text-medium);
     line-height: 1.65;
     font-size: clamp(0.92rem, 2vw, 0.98rem);
+    margin: 0;
 }
 
 /* ===================== Ubicación ===================== */
@@ -1366,6 +1372,46 @@ button:focus-visible,
     line-height: 1.5;
 }
 
+/* Crédito del desarrollador */
+.footer-credit {
+    margin-top: 8px;
+    font-size: clamp(0.78rem, 1.8vw, 0.85rem);
+    opacity: 0.85;
+}
+.footer-credit-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    transition: color 0.25s;
+}
+.footer-credit-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s ease;
+}
+.footer-credit-link:hover,
+.footer-credit-link:focus-visible {
+    color: var(--accent-light);
+    outline: none;
+}
+.footer-credit-link:hover::after,
+.footer-credit-link:focus-visible::after {
+    transform: scaleX(1);
+}
+.footer-credit-link:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
 /* ===================== Botón volver arriba ===================== */
 .back-to-top {
     position: fixed;
@@ -1438,6 +1484,9 @@ button:focus-visible,
     .scroll-mouse::after { animation: none; opacity: 1; transform: translateX(-50%); }
     .service-card:active { transform: none; }
     [class*="will-change"] { will-change: auto !important; }
+
+    /* FAQ: sin transición (accesibilidad) */
+    .faq-answer { transition: none; }
 }
 
 /* =========================================================

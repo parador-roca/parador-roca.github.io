@@ -9,16 +9,11 @@
         const y = window.__paradorRestoreY;
         const html = document.documentElement;
 
-        // Desactivar smooth scroll para que la restauración sea instantánea
         html.style.scrollBehavior = 'auto';
 
-        // Intento 1: ya (script.js corre después del parse con defer)
         window.scrollTo(0, y);
-
-        // Intento 2: próximo frame
         requestAnimationFrame(() => window.scrollTo(0, y));
 
-        // Intento 3: cuando todo cargó (por fuentes/imágenes que cambian el layout)
         window.addEventListener('load', () => {
             window.scrollTo(0, y);
             html.style.removeProperty('scroll-behavior');
@@ -46,7 +41,6 @@
             timer = setTimeout(save, 250);
         }, { passive: true });
 
-        // Guardar cuando la página se oculta o se va
         window.addEventListener('pagehide', save);
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') save();
@@ -253,24 +247,80 @@
 
     /* =========================================================
        6. FAQ (acordeón, solo uno abierto)
+       Animación con max-height medida por JS — sin bugs en Safari/iOS
        ========================================================= */
     if (faqGrid) {
         const faqItems = Array.from(faqGrid.querySelectorAll('.faq-item'));
+
+        // Inicializar: todas cerradas con max-height 0 explícito
+        faqItems.forEach(item => {
+            const answer = item.querySelector('.faq-answer');
+            if (answer) answer.style.maxHeight = '0px';
+        });
+
+        function openItem(item) {
+            const answer = item.querySelector('.faq-answer');
+            const btn = item.querySelector('.faq-question');
+            if (!answer || !btn) return;
+
+            item.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+            // Asignamos la altura real del contenido (sin cortes)
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+
+        function closeItem(item) {
+            const answer = item.querySelector('.faq-answer');
+            const btn = item.querySelector('.faq-question');
+            if (!answer || !btn) return;
+
+            // Fijamos la altura actual para poder animar a 0 sin saltos
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+            // Forzamos reflow para que el navegador registre el valor inicial
+            void answer.offsetHeight;
+            answer.style.maxHeight = '0px';
+
+            item.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+
         faqItems.forEach(item => {
             const btn = item.querySelector('.faq-question');
             if (!btn) return;
+
             btn.addEventListener('click', () => {
-                const wasOpen = item.classList.contains('open');
+                const isOpen = item.classList.contains('open');
+
+                // Cerrar todos los demás
                 faqItems.forEach(other => {
-                    if (other === item) return;
-                    other.classList.remove('open');
-                    const otherBtn = other.querySelector('.faq-question');
-                    if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+                    if (other !== item && other.classList.contains('open')) {
+                        closeItem(other);
+                    }
                 });
-                item.classList.toggle('open', !wasOpen);
-                btn.setAttribute('aria-expanded', String(!wasOpen));
+
+                if (isOpen) {
+                    closeItem(item);
+                } else {
+                    openItem(item);
+                }
             });
         });
+
+        // Al redimensionar, recalculamos la altura del item abierto
+        let faqResizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(faqResizeTimer);
+            faqResizeTimer = setTimeout(() => {
+                const openAnswer = faqGrid.querySelector('.faq-item.open .faq-answer');
+                if (openAnswer) {
+                    const prevTransition = openAnswer.style.transition;
+                    openAnswer.style.transition = 'none';
+                    openAnswer.style.maxHeight = openAnswer.scrollHeight + 'px';
+                    void openAnswer.offsetHeight;
+                    openAnswer.style.transition = prevTransition;
+                }
+            }, 150);
+        }, { passive: true });
     }
 
     /* =========================================================
