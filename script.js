@@ -2,7 +2,79 @@
     'use strict';
 
     /* =========================================================
-       Restaurar scroll guardado (volver desde menu/menu.html)
+       Tema claro / oscuro
+       ========================================================= */
+    (function themeController() {
+        const root = document.documentElement;
+        const toggle = document.getElementById('themeToggle');
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function getCurrentTheme() {
+            const attr = root.getAttribute('data-theme');
+            return (attr === 'dark' || attr === 'light') ? attr : 'light';
+        }
+
+        function updateToggleUI(theme) {
+            if (!toggle) return;
+            const isDark = theme === 'dark';
+            toggle.setAttribute('aria-pressed', String(isDark));
+            toggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+            toggle.setAttribute('title', isDark ? 'Modo claro' : 'Modo oscuro');
+        }
+
+        function updateThemeColor(theme) {
+            if (!metaThemeColor) return;
+            metaThemeColor.setAttribute('content', theme === 'dark' ? '#1a1410' : '#b75a3a');
+        }
+
+        function applyTheme(theme, animate) {
+            if (animate && !prefersReducedMotion) {
+                root.classList.add('theme-transition');
+                window.clearTimeout(applyTheme._t);
+                applyTheme._t = window.setTimeout(() => {
+                    root.classList.remove('theme-transition');
+                }, 420);
+            }
+            root.setAttribute('data-theme', theme);
+            updateToggleUI(theme);
+            updateThemeColor(theme);
+        }
+
+        function setTheme(theme, save) {
+            applyTheme(theme, true);
+            if (save) {
+                try { localStorage.setItem('paradorTheme', theme); } catch (e) {}
+            }
+        }
+
+        const initial = getCurrentTheme();
+        updateToggleUI(initial);
+        updateThemeColor(initial);
+
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                const next = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+                setTheme(next, true);
+            });
+        }
+
+        try {
+            const mq = window.matchMedia('(prefers-color-scheme: dark)');
+            const handler = (e) => {
+                let saved = null;
+                try { saved = localStorage.getItem('paradorTheme'); } catch (err) {}
+                if (saved !== 'dark' && saved !== 'light') {
+                    applyTheme(e.matches ? 'dark' : 'light', true);
+                }
+            };
+            if (mq.addEventListener) mq.addEventListener('change', handler);
+            else if (mq.addListener) mq.addListener(handler);
+        } catch (e) {}
+    })();
+
+    /* =========================================================
+       Restaurar scroll guardado
        ========================================================= */
     (function restoreScroll() {
         if (typeof window.__paradorRestoreY !== 'number') return;
@@ -23,7 +95,7 @@
     })();
 
     /* =========================================================
-       Guardar scroll periódicamente para volver al mismo lugar
+       Guardar scroll periódicamente
        ========================================================= */
     (function saveScroll() {
         const KEY = 'paradorIndexScrollY';
@@ -141,7 +213,7 @@
     }
 
     /* =========================================================
-       3. Mobile menu (focus trap + inert)
+       3. Mobile menu
        ========================================================= */
     let lastFocusedBeforeMenu = null;
 
@@ -212,7 +284,7 @@
     }
 
     /* =========================================================
-       4. Smooth scroll (solo para anclas #, no para menu/menu.html)
+       4. Smooth scroll
        ========================================================= */
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -246,13 +318,11 @@
     }
 
     /* =========================================================
-       6. FAQ (acordeón, solo uno abierto)
-       Animación con max-height medida por JS — sin bugs en Safari/iOS
+       6. FAQ (acordeón)
        ========================================================= */
     if (faqGrid) {
         const faqItems = Array.from(faqGrid.querySelectorAll('.faq-item'));
 
-        // Inicializar: todas cerradas con max-height 0 explícito
         faqItems.forEach(item => {
             const answer = item.querySelector('.faq-answer');
             if (answer) answer.style.maxHeight = '0px';
@@ -265,7 +335,6 @@
 
             item.classList.add('open');
             btn.setAttribute('aria-expanded', 'true');
-            // Asignamos la altura real del contenido (sin cortes)
             answer.style.maxHeight = answer.scrollHeight + 'px';
         }
 
@@ -274,9 +343,7 @@
             const btn = item.querySelector('.faq-question');
             if (!answer || !btn) return;
 
-            // Fijamos la altura actual para poder animar a 0 sin saltos
             answer.style.maxHeight = answer.scrollHeight + 'px';
-            // Forzamos reflow para que el navegador registre el valor inicial
             void answer.offsetHeight;
             answer.style.maxHeight = '0px';
 
@@ -291,7 +358,6 @@
             btn.addEventListener('click', () => {
                 const isOpen = item.classList.contains('open');
 
-                // Cerrar todos los demás
                 faqItems.forEach(other => {
                     if (other !== item && other.classList.contains('open')) {
                         closeItem(other);
@@ -306,7 +372,6 @@
             });
         });
 
-        // Al redimensionar, recalculamos la altura del item abierto
         let faqResizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(faqResizeTimer);

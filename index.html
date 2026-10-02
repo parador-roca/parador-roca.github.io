@@ -3,8 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        // Restaurar scroll guardado (volver de menu/menu.html)
-        // Corre antes de que se pinte la página para evitar flash
+        // Anti-flash: aplicar tema ANTES de pintar la página
+        (function() {
+            try {
+                var saved = localStorage.getItem('paradorTheme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = (saved === 'dark' || saved === 'light')
+                    ? saved
+                    : (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <script>
+        // Restaurar scroll guardado
         (function() {
             try {
                 var y = sessionStorage.getItem('paradorIndexScrollY');
@@ -187,7 +201,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="global/base.css">
+    <link rel="stylesheet" href="global/layout.css">
+    <link rel="stylesheet" href="global/components.css">
     <link rel="stylesheet" href="galeria/galeria.css">
 </head>
 <body>
@@ -209,11 +225,29 @@
                     <a href="#ubicacion">Ubicación</a>
                     <a href="#contacto">Contacto</a>
                 </nav>
-                <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                </button>
+                <div class="navbar-actions">
+                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Modo oscuro">
+                        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <line x1="12" y1="2" x2="12" y2="5"></line>
+                            <line x1="12" y1="19" x2="12" y2="22"></line>
+                            <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"></line>
+                            <line x1="17.66" y1="17.66" x2="19.78" y2="19.78"></line>
+                            <line x1="2" y1="12" x2="5" y2="12"></line>
+                            <line x1="19" y1="12" x2="22" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"></line>
+                            <line x1="17.66" y1="6.34" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </button>
+                    <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -252,9 +286,6 @@
                     <span class="particle"></span><span class="particle"></span><span class="particle"></span>
                 </div>
                 <div class="hero-content container">
-                    <div class="hero-badge">
-                        <span class="badge-dot pulse-dot" aria-hidden="true"></span> Abierto las 24 horas, todos los días
-                    </div>
                     <h1 id="hero-heading">Parador <span class="accent">Roca</span></h1>
                     <p class="hero-subtitle-main">Comida, artesanía y experiencias en un solo lugar</p>
                     <p class="hero-subtitle">Una parada con alma en el corazón de Misiones. Donde el reloj no importa y siempre hay alguien para recibirte.</p>

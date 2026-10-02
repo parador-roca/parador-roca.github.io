@@ -2,6 +2,22 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script>
+        // Anti-flash: aplicar tema ANTES de pintar la página
+        // Comparte la misma clave 'paradorTheme' que la home → sincronizado
+        (function() {
+            try {
+                var saved = localStorage.getItem('paradorTheme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var theme = (saved === 'dark' || saved === 'light')
+                    ? saved
+                    : (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes">
     <meta name="description" content="Carta digital de Parador Roca. Vigilantes, helados artesanales, café de especialidad y parrilla. Pagá fácil con Mercado Pago.">
     <meta name="theme-color" content="#5e3a1c">
@@ -35,20 +51,79 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        /* =========================================================
+           TEMA CLARO (por defecto)
+           ========================================================= */
         :root {
             --texto: #2b1e12;
             --verde: #2b6e4c;
             --dorado: #d4a373;
+            --fondo-body: #f5efe0;
+            --fondo-section: rgba(255, 255, 255, 0.85);
+            --fondo-section-solid: rgba(255, 255, 255, 0.95);
+            --fondo-item: #fffbf5;
+            --fondo-item-hover: #fff6ed;
+            --fondo-item-active: #fff6ed;
+            --borde-item: #f0e3d0;
+            --fondo-icon: #fae9dc;
+            --fondo-precio: #eaf5e6;
+            --fondo-precio-active: #d4ead5;
+            --precio-texto: #2b6e4c;
+            --texto-secundario: #5e3a1c;
+            --texto-muted: #7b6a5a;
+            --badge-clasico-bg: #2b1e12;
+            --badge-clasico-texto: #f5e6d3;
+            --hero-fade: linear-gradient(to bottom, transparent 0%, rgba(245,239,224,0.85) 70%, rgba(245,239,224,0.95) 100%);
+
             --sombra-suave: 0 20px 40px rgba(0,0,0,0.06);
             --borde-radio: clamp(20px, 5vw, 28px);
             --item-padding: clamp(0.8rem, 3vw, 1.2rem);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
+        /* =========================================================
+           TEMA OSCURO
+           ========================================================= */
+        [data-theme="dark"] {
+            --texto: #f0e6dc;
+            --verde: #4fa876;
+            --dorado: #e0b585;
+            --fondo-body: #1a1410;
+            --fondo-section: rgba(37, 32, 24, 0.88);
+            --fondo-section-solid: rgba(37, 32, 24, 0.97);
+            --fondo-item: #2a2218;
+            --fondo-item-hover: #332a1e;
+            --fondo-item-active: #332a1e;
+            --borde-item: #3a2f24;
+            --fondo-icon: #332a1e;
+            --fondo-precio: rgba(79, 168, 118, 0.18);
+            --fondo-precio-active: rgba(79, 168, 118, 0.28);
+            --precio-texto: #6fd39a;
+            --texto-secundario: #c4b0a0;
+            --texto-muted: #8a7565;
+            --badge-clasico-bg: #f0e6dc;
+            --badge-clasico-texto: #2b1e12;
+            --hero-fade: linear-gradient(to bottom, transparent 0%, rgba(26,20,16,0.85) 70%, rgba(26,20,16,0.95) 100%);
+
+            --sombra-suave: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* Transición suave al cambiar de tema */
+        html.theme-transition,
+        html.theme-transition *,
+        html.theme-transition *::before,
+        html.theme-transition *::after {
+            transition: background-color 0.35s ease,
+                        color 0.35s ease,
+                        border-color 0.35s ease,
+                        box-shadow 0.35s ease !important;
+            transition-delay: 0s !important;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: url('img/fondo.webp') center/cover scroll;
-            background-color: #f5efe0;
+            background-color: var(--fondo-body);
             color: var(--texto);
             line-height: 1.5;
             min-height: 100vh;
@@ -57,6 +132,7 @@
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* ===================== Hero ===================== */
@@ -74,6 +150,10 @@
             overflow: hidden;
         }
 
+        [data-theme="dark"] .hero {
+            background-color: #1f1814;
+        }
+
         .hero::after {
             content: "";
             position: absolute;
@@ -81,17 +161,30 @@
             left: 0;
             width: 100%;
             height: 30%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(245,239,224,0.85) 70%, rgba(245,239,224,0.95) 100%);
+            background: var(--hero-fade);
             z-index: 0;
             pointer-events: none;
+            transition: background 0.3s ease;
         }
 
-        /* ===================== Botón Volver ===================== */
-        .back-button {
+        /* ===================== Botones flotantes (Volver + Tema) ===================== */
+        .top-actions {
             position: absolute;
             top: max(1rem, env(safe-area-inset-top, 0px));
             left: clamp(0.8rem, 3vw, 1.5rem);
+            right: clamp(0.8rem, 3vw, 1.5rem);
             z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .top-actions > * {
+            pointer-events: auto;
+        }
+
+        .back-button {
             display: inline-flex;
             align-items: center;
             gap: 0.45rem;
@@ -137,6 +230,53 @@
             }
         }
 
+        /* Botón de tema */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: background 0.25s ease, transform 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            flex-shrink: 0;
+            padding: 0;
+        }
+        @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+            .theme-toggle { background: rgba(0, 0, 0, 0.65); }
+        }
+        .theme-toggle:hover,
+        .theme-toggle:focus-visible {
+            background: rgba(0, 0, 0, 0.65);
+            outline: none;
+        }
+        .theme-toggle:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 2px;
+        }
+        .theme-toggle:active {
+            transform: scale(0.96);
+        }
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .theme-toggle .icon-sun { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+        .theme-toggle:hover svg { transform: rotate(20deg); }
+
         .hero-content {
             position: relative;
             z-index: 2;
@@ -149,8 +289,6 @@
             height: auto;
             margin-bottom: 2.5rem;
             filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
-            fetch-priority: high;
-            loading: eager;
         }
 
         .scroll-indicator {
@@ -193,7 +331,7 @@
         }
 
         .section {
-            background: rgba(255, 255, 255, 0.85);
+            background: var(--fondo-section);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: var(--borde-radio);
@@ -201,6 +339,10 @@
             margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
             box-shadow: var(--sombra-suave);
             border: 1px solid rgba(212,163,115,0.2);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        [data-theme="dark"] .section {
+            border-color: rgba(224, 181, 133, 0.15);
         }
 
         .section-header {
@@ -212,7 +354,7 @@
 
         .section-icon {
             font-size: clamp(1.8rem, 5vw, 2.2rem);
-            background: #fae9dc;
+            background: var(--fondo-icon);
             width: clamp(40px, 10vw, 50px);
             height: clamp(40px, 10vw, 50px);
             border-radius: 16px;
@@ -220,18 +362,20 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            transition: background 0.3s ease;
         }
 
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.6rem, 6vw, 2rem);
             font-weight: 700;
-            color: #2b1e12;
+            color: var(--texto);
             line-height: 1.2;
+            transition: color 0.3s ease;
         }
 
         .item-no-img {
-            background: #fffbf5;
+            background: var(--fondo-item);
             border-radius: 16px;
             padding: 0.9rem 1.2rem;
             margin-bottom: 0.8rem;
@@ -241,7 +385,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-            border: 1px solid #f0e3d0;
+            border: 1px solid var(--borde-item);
             transition: all 0.25s ease;
             animation: fadeUp 0.5s ease forwards;
             opacity: 0;
@@ -251,7 +395,7 @@
         }
 
         .item-no-img:active {
-            background: #fff6ed;
+            background: var(--fondo-item-active);
             border-color: var(--dorado);
             transform: scale(0.98);
             box-shadow: 0 8px 15px rgba(0,0,0,0.05);
@@ -259,7 +403,7 @@
 
         @media (hover: hover) {
             .item-no-img:hover {
-                background: #fff6ed;
+                background: var(--fondo-item-hover);
                 border-color: var(--dorado);
                 transform: translateX(4px);
                 box-shadow: 0 8px 15px rgba(0,0,0,0.05);
@@ -275,18 +419,20 @@
             gap: 0.5rem;
             flex-wrap: wrap;
             pointer-events: none;
+            color: var(--texto);
+            transition: color 0.3s ease;
         }
 
         .item-price {
             font-weight: 800;
             font-size: clamp(1rem, 3.5vw, 1.4rem);
-            color: var(--verde);
-            background: #eaf5e6;
+            color: var(--precio-texto);
+            background: var(--fondo-precio);
             padding: 0.5rem 1.4rem;
             border-radius: 30px;
             white-space: nowrap;
             flex-shrink: 0;
-            transition: transform 0.15s ease, background 0.2s ease;
+            transition: transform 0.15s ease, background 0.2s ease, color 0.3s ease;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             touch-action: manipulation;
             position: relative;
@@ -308,16 +454,16 @@
             top: 50%;
             width: 6px;
             height: 6px;
-            border-right: 2px solid var(--verde);
-            border-bottom: 2px solid var(--verde);
+            border-right: 2px solid var(--precio-texto);
+            border-bottom: 2px solid var(--precio-texto);
             transform: translateY(-70%) rotate(-45deg);
             opacity: 0.6;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, border-color 0.3s;
         }
 
         .item-price:active {
             transform: scale(0.95);
-            background: #d4ead5;
+            background: var(--fondo-precio-active);
         }
 
         .badge {
@@ -332,11 +478,11 @@
             pointer-events: none;
         }
         .badge-star { background: #ffd700; color: #2b1e12; }
-        .badge-clasico { background: #2b1e12; color: #f5e6d3; }
+        .badge-clasico { background: var(--badge-clasico-bg); color: var(--badge-clasico-texto); transition: background 0.3s ease, color 0.3s ease; }
 
         .order-section {
             text-align: center;
-            background: rgba(255,255,255,0.9);
+            background: var(--fondo-section-solid);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: var(--borde-radio);
@@ -345,6 +491,7 @@
             box-shadow: var(--sombra-suave);
             border: 2px dashed var(--dorado);
             scroll-margin-top: 2rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .order-icon {
@@ -372,14 +519,22 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.4rem, 5vw, 1.8rem);
             font-weight: 700;
-            color: #2b1e12;
+            color: var(--texto);
             margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         .order-text {
             font-size: 1rem;
-            color: #5e3a1c;
+            color: var(--texto-secundario);
             margin-bottom: 0.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .order-hint {
+            font-size: 0.9rem;
+            color: var(--texto-muted);
+            transition: color 0.3s ease;
         }
 
         .payment-option {
@@ -390,9 +545,10 @@
 
         .payment-text {
             font-size: 0.95rem;
-            color: #5e3a1c;
+            color: var(--texto-secundario);
             margin-bottom: 0.8rem;
             font-weight: 500;
+            transition: color 0.3s ease;
         }
 
         .btn-mercadopago {
@@ -451,6 +607,14 @@
                 padding: 0.7rem 1.5rem;
                 font-size: 0.9rem;
             }
+            .theme-toggle {
+                width: 38px;
+                height: 38px;
+            }
+            .theme-toggle svg {
+                width: 18px;
+                height: 18px;
+            }
         }
 
         @supports (-webkit-touch-callout: none) {
@@ -458,7 +622,7 @@
             .order-section {
                 backdrop-filter: none;
                 -webkit-backdrop-filter: none;
-                background: rgba(255,255,255,0.95);
+                background: var(--fondo-section-solid);
             }
         }
 
@@ -480,19 +644,41 @@
                 scroll-behavior: auto !important;
             }
             .item-no-img { opacity: 1; }
+            html.theme-transition,
+            html.theme-transition * {
+                transition: none !important;
+            }
         }
     </style>
 </head>
 <body>
     <header class="hero">
-        <!-- Botón Volver (arriba a la izquierda del hero) -->
-        <a href="../index.html" class="back-button" aria-label="Volver a la página principal">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            Volver
-        </a>
+        <div class="top-actions">
+            <a href="../index.html" class="back-button" aria-label="Volver a la página principal">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Volver
+            </a>
+
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false" title="Modo oscuro">
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <line x1="12" y1="2" x2="12" y2="5"></line>
+                    <line x1="12" y1="19" x2="12" y2="22"></line>
+                    <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"></line>
+                    <line x1="17.66" y1="17.66" x2="19.78" y2="19.78"></line>
+                    <line x1="2" y1="12" x2="5" y2="12"></line>
+                    <line x1="19" y1="12" x2="22" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"></line>
+                    <line x1="17.66" y1="6.34" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
 
         <div class="hero-content">
             <img src="img/logo.webp" alt="Logotipo de Parador Roca" class="logo-hero" width="160" height="160" fetchpriority="high" loading="eager" onerror="this.style.display='none'">
@@ -605,7 +791,7 @@
             <div class="order-icon">🛎️</div>
             <h2 class="order-title">¿Ya elegiste?</h2>
             <p class="order-text">Acercate a la caja y pedí lo que más te guste.</p>
-            <p style="font-size: 0.9rem; color: #7b6a5a;">¡Te esperamos!</p>
+            <p class="order-hint">¡Te esperamos!</p>
 
             <div class="payment-option">
                 <p class="payment-text">¿Querés pagar ahora con tu celu?</p>
@@ -627,7 +813,83 @@
     </main>
 
     <script>
-        (function() {
+        /* =========================================================
+           Tema claro / oscuro — sincronizado con la home
+           ========================================================= */
+        (function themeController() {
+            const root = document.documentElement;
+            const toggle = document.getElementById('themeToggle');
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            function getCurrentTheme() {
+                const attr = root.getAttribute('data-theme');
+                return (attr === 'dark' || attr === 'light') ? attr : 'light';
+            }
+
+            function updateToggleUI(theme) {
+                if (!toggle) return;
+                const isDark = theme === 'dark';
+                toggle.setAttribute('aria-pressed', String(isDark));
+                toggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+                toggle.setAttribute('title', isDark ? 'Modo claro' : 'Modo oscuro');
+            }
+
+            function updateThemeColor(theme) {
+                if (!metaThemeColor) return;
+                metaThemeColor.setAttribute('content', theme === 'dark' ? '#1a1410' : '#5e3a1c');
+            }
+
+            function applyTheme(theme, animate) {
+                if (animate && !prefersReducedMotion) {
+                    root.classList.add('theme-transition');
+                    window.clearTimeout(applyTheme._t);
+                    applyTheme._t = window.setTimeout(() => {
+                        root.classList.remove('theme-transition');
+                    }, 420);
+                }
+                root.setAttribute('data-theme', theme);
+                updateToggleUI(theme);
+                updateThemeColor(theme);
+            }
+
+            function setTheme(theme, save) {
+                applyTheme(theme, true);
+                if (save) {
+                    try { localStorage.setItem('paradorTheme', theme); } catch (e) {}
+                }
+            }
+
+            const initial = getCurrentTheme();
+            updateToggleUI(initial);
+            updateThemeColor(initial);
+
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    const next = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+                    setTheme(next, true);
+                });
+            }
+
+            // Escuchar cambios del sistema si el usuario no eligió manualmente
+            try {
+                const mq = window.matchMedia('(prefers-color-scheme: dark)');
+                const handler = (e) => {
+                    let saved = null;
+                    try { saved = localStorage.getItem('paradorTheme'); } catch (err) {}
+                    if (saved !== 'dark' && saved !== 'light') {
+                        applyTheme(e.matches ? 'dark' : 'light', true);
+                    }
+                };
+                if (mq.addEventListener) mq.addEventListener('change', handler);
+                else if (mq.addListener) mq.addListener(handler);
+            } catch (e) {}
+        })();
+
+        /* =========================================================
+           Menú: interacción con precios
+           ========================================================= */
+        (function menuInteractions() {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const priceElements = document.querySelectorAll('.item-price');
 
