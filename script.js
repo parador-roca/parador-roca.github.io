@@ -1,9 +1,46 @@
 (function () {
     'use strict';
 
-    /* =========================================================
-       Tema claro / oscuro
-       ========================================================= */
+    (function restoreScroll() {
+        if (typeof window.__paradorRestoreY !== 'number') return;
+        const y = window.__paradorRestoreY;
+        const html = document.documentElement;
+
+        html.style.scrollBehavior = 'auto';
+
+        window.scrollTo(0, y);
+        requestAnimationFrame(() => window.scrollTo(0, y));
+
+        window.addEventListener('load', () => {
+            window.scrollTo(0, y);
+            html.style.removeProperty('scroll-behavior');
+        }, { once: true });
+
+        delete window.__paradorRestoreY;
+    })();
+
+    (function saveScroll() {
+        const KEY = 'paradorIndexScrollY';
+        let timer = null;
+
+        function save() {
+            try {
+                sessionStorage.setItem(KEY, String(window.scrollY));
+            } catch (e) {}
+            timer = null;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (timer) return;
+            timer = setTimeout(save, 250);
+        }, { passive: true });
+
+        window.addEventListener('pagehide', save);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') save();
+        });
+    })();
+
     (function themeController() {
         const root = document.documentElement;
         const toggle = document.getElementById('themeToggle');
@@ -73,55 +110,65 @@
         } catch (e) {}
     })();
 
-    /* =========================================================
-       Restaurar scroll guardado
-       ========================================================= */
-    (function restoreScroll() {
-        if (typeof window.__paradorRestoreY !== 'number') return;
-        const y = window.__paradorRestoreY;
-        const html = document.documentElement;
+    (function preloadGalleryImages() {
+        const gallery = document.getElementById('galleryGrid');
+        if (!gallery) return;
 
-        html.style.scrollBehavior = 'auto';
-
-        window.scrollTo(0, y);
-        requestAnimationFrame(() => window.scrollTo(0, y));
-
-        window.addEventListener('load', () => {
-            window.scrollTo(0, y);
-            html.style.removeProperty('scroll-behavior');
-        }, { once: true });
-
-        delete window.__paradorRestoreY;
-    })();
-
-    /* =========================================================
-       Guardar scroll periódicamente
-       ========================================================= */
-    (function saveScroll() {
-        const KEY = 'paradorIndexScrollY';
-        let timer = null;
-
-        function save() {
-            try {
-                sessionStorage.setItem(KEY, String(window.scrollY));
-            } catch (e) { /* ignore */ }
-            timer = null;
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (connection) {
+            if (connection.saveData) return;
+            const slow = ['slow-2g', '2g'];
+            if (slow.indexOf(connection.effectiveType) !== -1) return;
         }
 
-        window.addEventListener('scroll', () => {
-            if (timer) return;
-            timer = setTimeout(save, 250);
-        }, { passive: true });
+        const items = gallery.querySelectorAll('.gallery-item');
+        const collected = [];
 
-        window.addEventListener('pagehide', save);
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') save();
+        items.forEach(item => {
+            const list = (item.getAttribute('data-images') || '')
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+
+            const firstImg = item.querySelector('img');
+            const firstSrc = firstImg ? firstImg.getAttribute('src') : null;
+
+            list.forEach(url => {
+                if (url && url !== firstSrc) collected.push(url);
+            });
         });
+
+        const unique = [];
+        const seen = Object.create(null);
+        for (let i = 0; i < collected.length; i++) {
+            const u = collected[i];
+            if (!seen[u]) {
+                seen[u] = true;
+                unique.push(u);
+            }
+        }
+
+        if (!unique.length) return;
+
+        function inject() {
+            for (let i = 0; i < unique.length; i++) {
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.as = 'image';
+                link.href = unique[i];
+                document.head.appendChild(link);
+            }
+        }
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(inject, { timeout: 2500 });
+        } else {
+            window.addEventListener('load', () => {
+                setTimeout(inject, 600);
+            }, { once: true });
+        }
     })();
 
-    /* =========================================================
-       Referencias del DOM
-       ========================================================= */
     const navbar          = document.getElementById('navbar');
     const hamburger       = document.getElementById('hamburger');
     const mobileMenu      = document.getElementById('mobileMenu');
@@ -131,9 +178,6 @@
     const backToTop       = document.getElementById('backToTop');
     const faqGrid         = document.getElementById('faqGrid');
 
-    /* =========================================================
-       Utilidades
-       ========================================================= */
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const supportsInert = 'inert' in HTMLElement.prototype;
 
@@ -149,9 +193,6 @@
 
     if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
 
-    /* =========================================================
-       1. Scroll handlers
-       ========================================================= */
     const allNavLinks = document.querySelectorAll(
         '.nav-links a[href^="#"], .mobile-nav-links a[href^="#"]'
     );
@@ -203,18 +244,12 @@
     updateActiveNavLink();
     updateBackToTop();
 
-    /* =========================================================
-       2. Botón volver arriba
-       ========================================================= */
     if (backToTop) {
         backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
         });
     }
 
-    /* =========================================================
-       3. Mobile menu
-       ========================================================= */
     let lastFocusedBeforeMenu = null;
 
     function getMenuFocusables() {
@@ -283,9 +318,6 @@
         });
     }
 
-    /* =========================================================
-       4. Smooth scroll
-       ========================================================= */
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
@@ -299,9 +331,6 @@
         });
     });
 
-    /* =========================================================
-       5. Reveal on scroll
-       ========================================================= */
     const revealElements = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window && !prefersReducedMotion) {
         const observer = new IntersectionObserver(entries => {
@@ -317,9 +346,6 @@
         revealElements.forEach(el => el.classList.add('visible'));
     }
 
-    /* =========================================================
-       6. FAQ (acordeón)
-       ========================================================= */
     if (faqGrid) {
         const faqItems = Array.from(faqGrid.querySelectorAll('.faq-item'));
 
@@ -388,9 +414,6 @@
         }, { passive: true });
     }
 
-    /* =========================================================
-       7. Resize: cerrar menú móvil si pasamos a desktop
-       ========================================================= */
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
@@ -401,9 +424,6 @@
         }, 150);
     }, { passive: true });
 
-    /* =========================================================
-       8. Estado inicial
-       ========================================================= */
     setInert(mobileMenu, true);
 
 })();
