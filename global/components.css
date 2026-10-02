@@ -1,7 +1,7 @@
 /* =========================================================
    Parador Roca — Componentes
    Botones, servicios, personalización, FAQ, ubicación y
-   contacto. Cada componente con su responsive propio.
+   contacto.
    ========================================================= */
 
 /* ===================== Botones ===================== */
@@ -75,7 +75,6 @@
 }
 .btn-glow { animation: subtlePulse 2.8s ease-in-out infinite; }
 
-/* Botones de contacto (WhatsApp / Instagram) */
 .btn-whatsapp,
 .btn-instagram {
     color: var(--text-dark);
@@ -163,7 +162,7 @@
     display: flex;
     align-items: flex-end;
     box-shadow: var(--shadow-md);
-    transition: box-shadow 0.4s;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
     isolation: isolate;
     text-decoration: none;
     color: #fff;
@@ -199,6 +198,7 @@
         rgba(0,0,0,0) 100%);
     z-index: 1;
     pointer-events: none;
+    transition: opacity 0.4s ease;
 }
 .service-card-content {
     position: relative;
@@ -213,6 +213,7 @@
     margin-bottom: 10px;
     display: block;
     line-height: 1;
+    transition: transform 0.4s var(--transition-bounce);
 }
 .service-card h3 {
     font-family: var(--font-heading);
@@ -255,6 +256,7 @@
     }
     .service-card:hover .service-card-bg { transform: scale(1.08); }
     .service-card:hover .service-card-tag { transform: scale(1.05); }
+    .service-card:hover .service-icon { transform: scale(1.12) rotate(-4deg); }
 }
 
 /* ===================== Personalización UV ===================== */
@@ -346,8 +348,15 @@
     border-radius: 100px;
     font-size: clamp(0.82rem, 2vw, 0.9rem);
     color: #f0e0ce;
-    transition: background 0.3s, border-color 0.3s;
+    transition: background 0.3s, border-color 0.3s, transform 0.3s;
     line-height: 1.4;
+}
+@media (hover: hover) and (pointer: fine) {
+    .personalization-tags li:hover {
+        background: rgba(255,255,255,0.14);
+        border-color: rgba(255,255,255,0.4);
+        transform: translateY(-2px);
+    }
 }
 .shipping-badge {
     display: inline-flex;
@@ -381,6 +390,7 @@
     position: relative;
     width: 100%;
     max-width: 500px;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
 }
 .image-frame img {
     width: 100%;
@@ -388,8 +398,14 @@
     border-radius: calc(var(--radius) - 6px);
     border: 1px solid rgba(255,255,255,0.3);
 }
+@media (hover: hover) and (pointer: fine) {
+    .image-frame:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 40px 60px rgba(0,0,0,0.7);
+    }
+}
 
-/* ===================== FAQ (acordeón) ===================== */
+/* ===================== FAQ ===================== */
 .faq-grid {
     max-width: 800px;
     margin: 0 auto;
@@ -471,6 +487,7 @@
     transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 opacity 0.3s ease;
     will-change: max-height, opacity;
+    contain: layout style;
 }
 .faq-item.open .faq-answer {
     opacity: 1;
@@ -481,9 +498,6 @@
     line-height: 1.65;
     font-size: clamp(0.92rem, 2vw, 0.98rem);
     margin: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-    .faq-answer { transition: none; }
 }
 
 /* ===================== Ubicación ===================== */
@@ -511,6 +525,14 @@
     text-align: center;
     gap: 14px;
     min-width: 0;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+    .info-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+        border-color: rgba(var(--primary-rgb), 0.2);
+    }
 }
 .info-card-icon {
     font-size: clamp(2rem, 4vw, 2.6rem);
@@ -559,6 +581,20 @@
     border-radius: 50%;
     flex-shrink: 0;
 }
+.hours-dot.pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: inherit;
+    animation: pulseRing 2s ease-out infinite;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+@keyframes pulseRing {
+    0%   { transform: scale(1);   opacity: 0.7; }
+    100% { transform: scale(2.8); opacity: 0; }
+}
 .location-note {
     text-align: center;
     color: var(--text-medium);
@@ -579,12 +615,19 @@
     height: clamp(200px, 30vw, 250px);
     width: 100%;
     max-width: 100%;
-    /* El mapa se ve igual en claro y oscuro (sin filtros) */
+    transition: box-shadow 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+    .map-container iframe:hover {
+        box-shadow: var(--shadow-md);
+    }
 }
 .map-link { align-self: center; margin-top: 12px; }
 
 /* ===================== Contacto ===================== */
-.contact-section { padding: clamp(50px, 8vw, 80px) 0; }
+.contact-section {
+    padding: clamp(50px, 8vw, 80px) 0;
+}
 .contact-card {
     background: var(--contact-gradient);
     border-radius: var(--radius-xl);
@@ -594,6 +637,12 @@
     border: 1px solid rgba(var(--primary-rgb), 0.1);
     position: relative;
     overflow: hidden;
+    transition: box-shadow 0.4s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+    .contact-card:hover {
+        box-shadow: var(--shadow-xl);
+    }
 }
 .contact-card::before {
     content: '';
@@ -630,9 +679,41 @@
 }
 
 /* =========================================================
+   MÓVIL — Componentes (sin blur, transiciones más cortas)
+   ========================================================= */
+@media (max-width: 768px) {
+    .personalization-content {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        padding: 32px 20px;
+    }
+    .image-frame {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(255,255,255,0.08);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+    }
+    .service-card-bg {
+        transition: none;
+    }
+    .contact-card::before { display: none; }
+    .faq-answer {
+        transition: max-height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    opacity 0.22s ease;
+    }
+    .personalization-badge,
+    .shipping-badge,
+    .service-card-tag {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    .personalization-badge { background: rgba(255,255,255,0.15); }
+    .shipping-badge { background: rgba(255,255,255,0.18); }
+}
+
+/* =========================================================
    RESPONSIVE — COMPONENTES
    ========================================================= */
-
 @media (max-width: 1024px) {
     .personalization-content {
         grid-template-columns: minmax(0, 1fr);
@@ -691,10 +772,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .particle { display: none; }
-    .hero-bg-image { animation: none; transform: scale(1.02); }
     .btn-glow { animation: none; }
-    .pulse-dot::after { animation: none; opacity: 0; }
-    .scroll-mouse::after { animation: none; opacity: 1; transform: translateX(-50%); }
+    .hours-dot.pulse-dot::after { animation: none; opacity: 0; }
     .service-card:active { transform: none; }
 }

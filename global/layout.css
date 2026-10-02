@@ -2,6 +2,8 @@
    Parador Roca — Layout
    Navbar, mobile menu, hero, banda informativa, sobre
    nosotros, footer y botón volver arriba.
+   Móvil: sin blur, sin animaciones costosas.
+   PC: blur real, hover ricos, transiciones premium.
    ========================================================= */
 
 /* ===================== Navbar ===================== */
@@ -94,7 +96,6 @@
     font-weight: 600;
 }
 
-/* ---- Acciones del navbar ---- */
 .navbar-actions {
     display: flex;
     align-items: center;
@@ -102,7 +103,6 @@
     flex-shrink: 0;
 }
 
-/* ---- Botón de tema (sol/luna) ---- */
 .theme-toggle {
     display: flex;
     align-items: center;
@@ -308,34 +308,6 @@
         var(--bg-light) 100%);
     z-index: 1;
 }
-.hero-particles {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-}
-.particle {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: rgba(232,168,64,0.4);
-    border-radius: 50%;
-    animation: float 6s infinite ease-in-out;
-    will-change: transform, opacity;
-}
-[data-theme="dark"] .particle {
-    background: rgba(232,168,64,0.6);
-}
-.particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-.particle:nth-child(2) { top: 70%; left: 85%; animation-delay: 1.5s; }
-.particle:nth-child(3) { top: 40%; left: 75%; animation-delay: 3s; }
-.particle:nth-child(4) { top: 80%; left: 15%; animation-delay: 4.5s; }
-.particle:nth-child(5) { top: 50%; left: 50%; animation-delay: 2s; }
-.particle:nth-child(6) { top: 15%; left: 60%; animation-delay: 5s; }
-@keyframes float {
-    0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
-    50%      { transform: translateY(-25px) scale(1.3); opacity: 1; }
-}
 
 .hero-content {
     position: relative;
@@ -349,6 +321,7 @@
     -webkit-backdrop-filter: blur(14px);
     box-shadow: var(--shadow-lg);
     border: 1px solid rgba(255,255,255,0.5);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 [data-theme="dark"] .hero-content {
     border-color: rgba(255,255,255,0.08);
@@ -357,48 +330,6 @@
     .hero-content { background: var(--surface-hero-solid); }
 }
 
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    background: rgba(var(--primary-rgb), 0.1);
-    border: 1px solid rgba(var(--primary-rgb), 0.25);
-    color: var(--primary);
-    padding: 8px 20px;
-    border-radius: 100px;
-    font-size: clamp(0.72rem, 2.2vw, 0.85rem);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    margin-bottom: 24px;
-    line-height: 1.35;
-    text-align: center;
-    max-width: 100%;
-}
-.badge-dot {
-    position: relative;
-    width: 8px;
-    height: 8px;
-    background: var(--primary);
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-}
-.pulse-dot::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background-color: inherit;
-    animation: pulseRing 2s ease-out infinite;
-    pointer-events: none;
-    will-change: transform, opacity;
-}
-@keyframes pulseRing {
-    0%   { transform: scale(1);   opacity: 0.7; }
-    100% { transform: scale(2.8); opacity: 0; }
-}
 .hero h1 {
     font-family: var(--font-heading);
     font-size: clamp(2.4rem, 9vw, 5.8rem);
@@ -466,6 +397,14 @@
     letter-spacing: 0.05em;
 }
 
+/* Hover del hero (solo PC) */
+@media (hover: hover) and (pointer: fine) {
+    .hero-content:hover {
+        box-shadow: var(--shadow-xl);
+        transform: translateY(-2px);
+    }
+}
+
 /* ===================== Banda informativa ===================== */
 .info-band {
     background: var(--white);
@@ -502,7 +441,7 @@
     color: inherit;
     padding: clamp(12px, 1.8vw, 18px) clamp(14px, 2vw, 22px);
     border-radius: var(--radius);
-    transition: background 0.25s ease;
+    transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
     cursor: pointer;
     position: relative;
     border: 1px solid transparent;
@@ -527,7 +466,7 @@
     border-radius: 50%;
     font-size: clamp(1.25rem, 2.4vw, 1.5rem);
     line-height: 1;
-    transition: background 0.25s ease;
+    transition: background 0.25s ease, transform 0.25s ease;
 }
 
 .info-band-text {
@@ -610,12 +549,20 @@
     color: var(--text-medium);
     line-height: 1.4;
     max-width: 100%;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s;
 }
 .highlight-item strong { color: var(--primary-dark); }
 .highlight-icon {
     font-size: 1.2rem;
     line-height: 1;
     flex-shrink: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+    .highlight-item:hover {
+        background: rgba(var(--primary-rgb), 0.08);
+        border-color: rgba(var(--primary-rgb), 0.2);
+        transform: translateY(-1px);
+    }
 }
 .about-image-wrapper { position: relative; }
 .about-image {
@@ -744,6 +691,7 @@
     box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.35);
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+    will-change: opacity, transform;
 }
 .back-to-top.visible {
     opacity: 1;
@@ -765,9 +713,48 @@
 }
 
 /* =========================================================
+   MÓVIL: sin blur, sin animación hero (batería + fluidez)
+   Fondo sólido equivalente para mantener el look.
+   ========================================================= */
+@media (max-width: 768px) {
+    .navbar {
+        background: var(--surface-navbar-solid);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    .mobile-menu-backdrop {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: var(--surface-menu-backdrop-solid);
+    }
+    .mobile-menu-panel {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: var(--surface-menu-panel);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+    .hero-bg-image {
+        animation: none;
+        transform: scale(1.05);
+    }
+    .hero-content {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: var(--surface-hero-solid);
+        padding: 28px 22px;
+    }
+    .hero {
+        padding: 40px 16px 50px;
+        min-height: auto;
+    }
+    .hero-scroll-indicator {
+        margin-top: 22px;
+    }
+}
+
+/* =========================================================
    RESPONSIVE — LAYOUT
    ========================================================= */
-
 @media (max-width: 1080px) {
     .nav-links { display: none; }
     .hamburger { display: flex; }
@@ -818,11 +805,7 @@
     .hero h1 { font-size: clamp(2.2rem, 11vw, 2.8rem); }
     .hero-subtitle-main { font-size: 1.1rem; }
     .hero-subtitle { font-size: 0.98rem; }
-    .hero-badge {
-        font-size: 0.72rem;
-        padding: 7px 16px;
-        border-radius: var(--radius);
-    }
+
     .hero-buttons {
         flex-direction: column;
         align-items: stretch;
@@ -882,7 +865,6 @@
     }
     .hero-content { padding: 22px 20px; }
     .hero-scroll-indicator { display: none; }
-    .hero-particles { display: none; }
 }
 
 @supports (padding: max(0px)) {
@@ -896,18 +878,19 @@
     }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    .hero-bg-image { animation: none; transform: scale(1.02); }
+    .scroll-mouse::after { animation: none; opacity: 1; transform: translateX(-50%); }
+}
+
 @media print {
     .navbar,
     .mobile-menu,
     .back-to-top,
-    .hero-particles,
     .hero-scroll-indicator,
     .theme-toggle {
         display: none !important;
     }
     .hero { min-height: auto; padding: 20px; }
-    body { background: #fff; color: #000; }
-    .reveal { opacity: 1; transform: none; }
     .hero-bg-image { animation: none; }
-    a { color: #000; text-decoration: underline; }
 }
